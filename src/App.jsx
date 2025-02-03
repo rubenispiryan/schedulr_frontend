@@ -1,43 +1,71 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CssBaseline, ThemeProvider, createTheme, Box } from '@mui/material';
 
-function App() {
- // State to store businesses from your Django API
- const [businesses, setBusinesses] = useState([]);
- const [loading, setLoading] = useState(true);
- const [error, setError] = useState(null);
+import Navbar from './components/Navbar';
+import AuthWrapper from './components/AuthWrapper';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import ProfilePage from './pages/ProfilePage';
 
- // Fetch businesses on component mount (like Django's model data)
- useEffect(() => {
-   const fetchBusinesses = async () => {
-     try {
-        const response = await axios.get('http://localhost:8000/businesses/');
-        console.log(response.status);
-        setBusinesses(response.data);
-      } catch (err) {
-        setError(err.response?.data?.detail || "Error message not present");
-        console.log(err.response.status);
-      } finally {
-        setLoading(false);
-      }
-   };
-   fetchBusinesses();
- }, []);
+// Create a basic theme
+const theme = createTheme({
+  palette: {
+    primary: { main: '#1976d2' },
+    secondary: { main: '#dc004e' },
+  },
+  typography: {
+    fontFamily: 'Arial, sans-serif',
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundColor: '#f5f5f5', // Add light gray background
+        },
+      },
+    },
+  },
+});
 
- if (loading) return <div>Loading...</div>;
- if (error) return <div>Error: {error}</div>;
+export default function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh' // Full viewport height
+        }}>
+          <Navbar />
 
- return (
-   <div>
-     <h1>Businesses</h1>
-     {businesses.map((business) => (
-       <div key={business.id}>
-         <h2>{business.name}</h2>
-         <p>{business.address}</p>
-       </div>
-     ))}
-   </div>
- );
+          {/* Main content container */}
+          <Box component="main" sx={{
+            flexGrow: 1,
+            py: 4,  // Vertical padding
+            px: 2,  // Horizontal padding
+            mt: 8   // Margin top to account for fixed navbar
+          }}>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+
+              <Route path="/" element={
+                <AuthWrapper>
+                  <HomePage />
+                </AuthWrapper>
+              }/>
+
+              <Route path="/profile" element={
+                <AuthWrapper>
+                  <ProfilePage />
+                </AuthWrapper>
+              }/>
+            </Routes>
+          </Box>
+        </Box>
+      </Router>
+    </ThemeProvider>
+  );
 }
-
-export default App;
