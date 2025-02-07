@@ -1,19 +1,18 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useEffect, useState} from 'react';
 import api from '../services/api';
 import {
-  Container,
+  Alert,
+  Avatar,
   Box,
-  Typography,
-  TextField,
   Button,
-  Paper,
+  CircularProgress,
+  Container,
   List,
   ListItem,
   ListItemText,
-  Avatar,
-  CircularProgress,
-  Alert
+  Paper,
+  TextField,
+  Typography
 } from '@mui/material';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 
@@ -62,25 +61,32 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress size={60} />
+      <Box sx={{display: 'flex', justifyContent: 'center', mt: 4}}>
+        <CircularProgress size={60}/>
       </Box>
     );
   }
 
   return (
-    <Container maxWidth="md">
+    <Container sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      minHeight: '80vh',
+      alignItems: 'center',
+      width: '60%',
+    }}>
       <Paper elevation={3} sx={{
         p: 4,
-        mt: 4,
         borderRadius: 3,
-        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+        width: '100%',
       }}>
         <Box sx={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 2
+          gap: 2,
+          margin: '0 auto'
         }}>
           <Avatar sx={{
             m: 2,
@@ -88,7 +94,7 @@ export default function ProfilePage() {
             width: 56,
             height: 56
           }}>
-            <PersonOutlineOutlinedIcon fontSize="large" />
+            <PersonOutlineOutlinedIcon fontSize="large"/>
           </Avatar>
 
           <Typography variant="h4" sx={{
@@ -100,13 +106,13 @@ export default function ProfilePage() {
           </Typography>
 
           {error && (
-            <Alert severity="error" sx={{ width: '100%', maxWidth: 500, mb: 2 }}>
+            <Alert severity="error" sx={{width: '100%', maxWidth: 500, mb: 2}}>
               {error}
             </Alert>
           )}
 
           {success && (
-            <Alert severity="success" sx={{ width: '100%', maxWidth: 500, mb: 2 }}>
+            <Alert severity="success" sx={{width: '100%', maxWidth: 500, mb: 2}}>
               Profile updated successfully!
             </Alert>
           )}
@@ -135,7 +141,7 @@ export default function ProfilePage() {
             <TextField
               label="Phone Number"
               value={userData.phone}
-              onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
+              onChange={(e) => setUserData({...userData, phone: e.target.value})}
               fullWidth
               margin="normal"
               variant="outlined"
@@ -170,7 +176,7 @@ export default function ProfilePage() {
             </Typography>
 
             {userData.favorite_businesses.length > 0 ? (
-              <List sx={{ width: '100%' }}>
+              <List sx={{width: '100%'}}>
                 {userData.favorite_businesses.map((business) => (
                   <ListItem
                     key={business.id}
@@ -186,14 +192,14 @@ export default function ProfilePage() {
                   >
                     <ListItemText
                       primary={business.name}
-                      primaryTypographyProps={{ fontWeight: 500 }}
+                      primaryTypographyProps={{fontWeight: 500}}
                       secondary={business.address}
                     />
                   </ListItem>
                 ))}
               </List>
             ) : (
-              <Typography variant="body1" sx={{ color: 'text.disabled' }}>
+              <Typography variant="body1" sx={{color: 'text.disabled'}}>
                 No favorite businesses yet
               </Typography>
             )}

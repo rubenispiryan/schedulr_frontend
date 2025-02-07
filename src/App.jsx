@@ -45,7 +45,15 @@ export default function App() {
             flexGrow: 1,
             py: 4,  // Vertical padding
             px: 2,  // Horizontal padding
-            mt: 8   // Margin top to account for fixed navbar
+            mt: 2,   // Margin top to account for fixed navbar
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            position: 'absolute', left: '50%', top: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '100%',
+            maxWidth: '800px',
           }}>
             <Routes>
               <Route path="/login" element={<LoginPage />} />

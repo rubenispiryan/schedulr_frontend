@@ -17,7 +17,7 @@ export default function Navbar() {
       borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
     }}>
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700 }}>
+        <Typography color="inherit" component={Link} to="/" variant="h6" sx={{ flexGrow: 1, fontWeight: 700, textTransform: 'none' }}>
           ✂️ BookMe
         </Typography>
         <Box sx={{ display: 'flex', gap: 2 }}>
