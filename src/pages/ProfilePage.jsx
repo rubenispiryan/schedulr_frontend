@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import api from '../services/api'
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 import {
   Container,
   Box,
@@ -13,6 +13,7 @@ import {
   ListItemText,
   Avatar,
   CircularProgress,
+  Alert
 } from '@mui/material';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 
@@ -23,44 +24,100 @@ export default function ProfilePage() {
     favorite_businesses: []
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   // Fetch user data from Django endpoint
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await api.get('/users/me/', {
-          headers: {
-            Authorization: `Token ${localStorage.getItem('token')}`
-          }
-        });
+        const response = await api.get('/users/me/');
         setUserData({
           email: response.data.email,
           phone: response.data.phone || '',
-          favorite_businesses: response.data.favorite_businesses
+          favorite_businesses: response.data.favorite_businesses || []
         });
         setLoading(false);
       } catch (err) {
         console.error('Failed to fetch profile:', err);
+        setError('Failed to load profile data');
+        setLoading(false);
       }
     };
     fetchProfile();
   }, []);
 
-  if (loading) return <CircularProgress />;
+  const handleSave = async () => {
+    try {
+      await api.patch('/users/me/', {
+        phone: userData.phone
+      });
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000); // Hide success message after 3 seconds
+    } catch (err) {
+      console.error('Update failed:', err);
+      setError('Failed to save changes');
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress size={60} />
+      </Box>
+    );
+  }
 
   return (
     <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 4, mt: 4, borderRadius: 2 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Avatar sx={{ m: 2, bgcolor: 'primary.main', width: 56, height: 56 }}>
+      <Paper elevation={3} sx={{
+        p: 4,
+        mt: 4,
+        borderRadius: 3,
+        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
+      }}>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 2
+        }}>
+          <Avatar sx={{
+            m: 2,
+            bgcolor: 'primary.main',
+            width: 56,
+            height: 56
+          }}>
             <PersonOutlineOutlinedIcon fontSize="large" />
           </Avatar>
 
-          <Typography variant="h4" sx={{ mb: 4, fontWeight: 600 }}>
+          <Typography variant="h4" sx={{
+            mb: 4,
+            fontWeight: 600,
+            color: 'text.primary'
+          }}>
             Your Profile
           </Typography>
 
-          <Box sx={{ width: '100%', maxWidth: 500 }}>
+          {error && (
+            <Alert severity="error" sx={{ width: '100%', maxWidth: 500, mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          {success && (
+            <Alert severity="success" sx={{ width: '100%', maxWidth: 500, mb: 2 }}>
+              Profile updated successfully!
+            </Alert>
+          )}
+
+          <Box sx={{
+            width: '100%',
+            maxWidth: 500,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2
+          }}>
             <TextField
               label="Email"
               value={userData.email}
@@ -68,6 +125,11 @@ export default function ProfilePage() {
               margin="normal"
               variant="outlined"
               disabled
+              sx={{
+                '& .MuiInputBase-input': {
+                  color: 'text.secondary'
+                }
+              }}
             />
 
             <TextField
@@ -77,37 +139,64 @@ export default function ProfilePage() {
               fullWidth
               margin="normal"
               variant="outlined"
+              inputProps={{
+                maxLength: 15
+              }}
             />
 
             <Button
               variant="contained"
               onClick={handleSave}
-              sx={{ mt: 3, px: 4, py: 1.5 }}
+              sx={{
+                mt: 2,
+                py: 1.5,
+                fontSize: '1rem',
+                fontWeight: 600,
+                textTransform: 'none',
+                borderRadius: 2,
+                alignSelf: 'flex-start'
+              }}
             >
               Save Changes
             </Button>
 
-            <Typography variant="h6" sx={{ mt: 6, mb: 2, color: 'text.secondary' }}>
+            <Typography variant="h6" sx={{
+              mt: 4,
+              mb: 2,
+              color: 'text.secondary',
+              fontWeight: 500
+            }}>
               ❤️ Favorite Businesses
             </Typography>
 
-            <List sx={{ width: '100%' }}>
-              {userData.favorite_businesses.map((business) => (
-                <ListItem
-                  key={business.id}
-                  sx={{
-                    bgcolor: 'action.hover',
-                    mb: 1,
-                    borderRadius: 1
-                  }}
-                >
-                  <ListItemText
-                    primary={business.name}
-                    secondary={business.address}
-                  />
-                </ListItem>
-              ))}
-            </List>
+            {userData.favorite_businesses.length > 0 ? (
+              <List sx={{ width: '100%' }}>
+                {userData.favorite_businesses.map((business) => (
+                  <ListItem
+                    key={business.id}
+                    sx={{
+                      bgcolor: 'action.hover',
+                      mb: 1,
+                      borderRadius: 2,
+                      transition: 'transform 0.2s',
+                      '&:hover': {
+                        transform: 'translateX(4px)'
+                      }
+                    }}
+                  >
+                    <ListItemText
+                      primary={business.name}
+                      primaryTypographyProps={{ fontWeight: 500 }}
+                      secondary={business.address}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Typography variant="body1" sx={{ color: 'text.disabled' }}>
+                No favorite businesses yet
+              </Typography>
+            )}
           </Box>
         </Box>
       </Paper>
