@@ -14,6 +14,8 @@ import {
 } from '@mui/material';
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
 export default function SignupPage() {
   const [formData, setFormData] = useState({
     email: '',
@@ -28,7 +30,7 @@ export default function SignupPage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/auth/registration/',
+        `${API_BASE_URL}/api/auth/registration/`,
         {
           email: formData.email,
           password1: formData.password1,

@@ -12,6 +12,8 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +24,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       // Call Django's login endpoint (adjust URL if needed)
-      const response = await axios.post('http://localhost:8000/api/auth/login/', {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login/`, {
         email,
         password
       });
