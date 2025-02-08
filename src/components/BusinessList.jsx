@@ -10,7 +10,7 @@ export default function BusinessList({ businesses }) {
             <CardMedia
               component="img"
               height="140"
-              image={business.image || '/placeholder-business.jpg'}
+              image={business.image || '/public/images/placeholder-business.jpg'}
               alt={business.name}
             />
             <CardContent sx={{ flexGrow: 1 }}>
