@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ProfilePage from './pages/ProfilePage';
+import BusinessPage from "./pages/BusinessPage.jsx";
 
 // Create a basic theme
 const theme = createTheme({
@@ -70,6 +71,14 @@ export default function App() {
                   <ProfilePage />
                 </AuthWrapper>
               }/>
+              <Route
+                path="/businesses/:id"
+                element={
+                  <AuthWrapper>
+                    <BusinessPage />
+                  </AuthWrapper>
+                }
+              />
             </Routes>
           </Box>
         </Box>
