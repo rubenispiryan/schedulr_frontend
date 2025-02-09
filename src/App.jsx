@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { CssBaseline, ThemeProvider, createTheme, Box } from '@mui/material';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {Box, createTheme, CssBaseline, ThemeProvider} from '@mui/material';
 
 import Navbar from './components/Navbar';
 import AuthWrapper from './components/AuthWrapper';
@@ -8,12 +8,13 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ProfilePage from './pages/ProfilePage';
 import BusinessPage from "./pages/BusinessPage.jsx";
+import BookingPage from "./pages/BookingPage.jsx";
 
 // Create a basic theme
 const theme = createTheme({
   palette: {
-    primary: { main: '#1976d2' },
-    secondary: { main: '#dc004e' },
+    primary: {main: '#1976d2'},
+    secondary: {main: '#dc004e'},
   },
   typography: {
     fontFamily: 'Arial, sans-serif',
@@ -32,14 +33,14 @@ const theme = createTheme({
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
+      <CssBaseline/>
       <Router>
         <Box sx={{
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh' // Full viewport height
         }}>
-          <Navbar />
+          <Navbar/>
 
           {/* Main content container */}
           <Box component="main" sx={{
@@ -57,25 +58,33 @@ export default function App() {
             maxWidth: '800px',
           }}>
             <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/login" element={<LoginPage/>}/>
+              <Route path="/signup" element={<SignupPage/>}/>
 
               <Route path="/" element={
                 <AuthWrapper>
-                  <HomePage />
+                  <HomePage/>
                 </AuthWrapper>
               }/>
 
               <Route path="/profile" element={
                 <AuthWrapper>
-                  <ProfilePage />
+                  <ProfilePage/>
                 </AuthWrapper>
               }/>
               <Route
                 path="/businesses/:id"
                 element={
                   <AuthWrapper>
-                    <BusinessPage />
+                    <BusinessPage/>
+                  </AuthWrapper>
+                }
+              />
+              <Route
+                path="/book/:serviceId"
+                element={
+                  <AuthWrapper>
+                    <BookingPage/>
                   </AuthWrapper>
                 }
               />

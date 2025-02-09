@@ -1,4 +1,5 @@
-import { Card, CardContent, Typography, Chip, Box } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Box, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export default function ServiceCard({ service }) {
   return (
@@ -15,6 +16,15 @@ export default function ServiceCard({ service }) {
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
           Duration: {service.duration} minutes
         </Typography>
+        <Button
+          component={Link}
+          to={`/book/${service.id}`}
+          variant="contained"
+          size="small"
+          sx={{ mt: 2 }}
+        >
+          Book Now
+        </Button>
       </CardContent>
     </Card>
   );

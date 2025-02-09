@@ -30,6 +30,25 @@ export default function BusinessPage() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+        height: 150,
+        overflow: 'hidden',
+        mb: 3
+      }}>
+        <img
+          src={business.image || '/images/placeholder-business.jpg'}
+          alt={business.name}
+          style={{
+            width: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            borderRadius: '8px',
+        }}
+        />
+      </Box>
       <Typography variant="h4" sx={{ mb: 3, fontWeight: 600 }}>
         {business.name}
       </Typography>
@@ -43,7 +62,7 @@ export default function BusinessPage() {
       </Typography>
 
       {business.services?.map(service => (
-        <ServiceCard key={service.id} service={service} />
+        <ServiceCard key={service.id} service={{ ...service, id: service.id }} />
       ))}
     </Box>
   );

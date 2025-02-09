@@ -7,6 +7,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token'); // Clear Django token
+    localStorage.removeItem('userId');
     navigate('/login');
   };
 
