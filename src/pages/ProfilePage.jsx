@@ -10,11 +10,13 @@ import {
   List,
   ListItem,
   ListItemText,
-  Paper,
+  Paper, Tab, Tabs,
   TextField,
   Typography
 } from '@mui/material';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import Favorites from "../components/Favorites.jsx";
+import BookingHistory from "../components/BookingHistory.jsx";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState({
@@ -25,6 +27,12 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   // Fetch user data from Django endpoint
   useEffect(() => {
@@ -68,6 +76,20 @@ export default function ProfilePage() {
   }
 
   return (
+    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+      <Tabs
+        value={tabValue}
+        onChange={handleTabChange}
+        sx={{ mb: 4 }}
+      >
+        <Tab label="Booking History" />
+        <Tab label="Favorites" />
+      </Tabs>
+
+      {tabValue === 0 && <BookingHistory />}
+      {tabValue === 1 && <Favorites />}
+    </Box>
     <Container sx={{
       display: 'flex',
       justifyContent: 'center',
@@ -174,7 +196,6 @@ export default function ProfilePage() {
             }}>
               ❤️ Favorite Businesses
             </Typography>
-
             {userData.favorite_businesses.length > 0 ? (
               <List sx={{width: '100%'}}>
                 {userData.favorite_businesses.map((business) => (
@@ -207,5 +228,6 @@ export default function ProfilePage() {
         </Box>
       </Paper>
     </Container>
+      </Box>
   );
 }

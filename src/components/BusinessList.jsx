@@ -1,4 +1,4 @@
-import { Card, CardContent, CardMedia, Typography, Grid, Link } from '@mui/material';
+import {Card, CardContent, CardMedia, Typography, Grid, Link} from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function BusinessList({ businesses }) {

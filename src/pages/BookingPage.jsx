@@ -79,7 +79,6 @@ export default function BookingPage() {
       setSuccess(true);
       setTimeout(() => navigate('/profile'), 2000);
     } catch (err) {
-      console.log(err)
       setError('Booking failed - please try again');
     }
   };

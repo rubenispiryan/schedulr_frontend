@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import ServiceCard from '../components/ServiceCard';
 import api from '../services/api';
+import FavoriteButton from "../components/FavoriteButton.jsx";
 
 export default function BusinessPage() {
   const { id } = useParams();
@@ -61,6 +62,15 @@ export default function BusinessPage() {
         Available Services
       </Typography>
 
+      <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+        <Typography gutterBottom variant="h6" component="div">
+          {business.name}
+        </Typography>
+        <FavoriteButton businessId={business.id}/>
+      </Box>
+      <Typography variant="body2" color="text.secondary">
+        {business.address}
+      </Typography>
       {business.services?.map(service => (
         <ServiceCard key={service.id} service={{ ...service, id: service.id }} />
       ))}
