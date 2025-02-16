@@ -9,6 +9,8 @@ import SignupPage from './pages/SignupPage';
 import ProfilePage from './pages/ProfilePage';
 import BusinessPage from "./pages/BusinessPage.jsx";
 import BookingPage from "./pages/BookingPage.jsx";
+import BusinessSignupPage from "./pages/BusinessSignupPage.jsx";
+import BusinessDashboardPage from "./pages/BusinessDashboardPage.jsx";
 
 // Create a basic theme
 const theme = createTheme({
@@ -24,6 +26,13 @@ const theme = createTheme({
       styleOverrides: {
         body: {
           backgroundColor: '#f5f5f5', // Add light gray background
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
         },
       },
     },
@@ -60,10 +69,17 @@ export default function App() {
             <Routes>
               <Route path="/login" element={<LoginPage/>}/>
               <Route path="/signup" element={<SignupPage/>}/>
+              <Route path="/business-signup" element={<BusinessSignupPage/>}/>
 
               <Route path="/" element={
                 <AuthWrapper>
                   <HomePage/>
+                </AuthWrapper>
+              }/>
+
+              <Route path="/dashboard" element={
+                <AuthWrapper>
+                  <BusinessDashboardPage/>
                 </AuthWrapper>
               }/>
 

@@ -1,20 +1,10 @@
-// src/pages/SignupPage.jsx
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import {
-  Container,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  Avatar,
-  FormHelperText
-} from '@mui/material';
+import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {Avatar, Box, Button, Container, FormHelperText, Paper, TextField, Typography} from '@mui/material';
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
+import api from "../services/api.js";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+// TODO: make phone not required
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -29,8 +19,8 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/api/auth/registration/`,
+      const response = await api.post(
+        '/auth/registration/',
         {
           email: formData.email,
           password1: formData.password1,
@@ -41,13 +31,16 @@ export default function SignupPage() {
 
       if (response.data.key) {
         localStorage.setItem('token', response.data.key);
+        const userResponse = await api.get('/users/me/');
+        localStorage.setItem('userId', userResponse.data.id); // Store user ID
+        localStorage.setItem('role', userResponse.data.role);
         navigate('/');
       }
     } catch (err) {
       if (err.response?.data) {
         setErrors(err.response.data);
       } else {
-        setErrors({ non_field_errors: ['Registration failed. Please try again.'] });
+        setErrors({non_field_errors: ['Registration failed. Please try again.']});
       }
     }
   };
@@ -57,7 +50,7 @@ export default function SignupPage() {
       ...formData,
       [e.target.name]: e.target.value
     });
-    setErrors({ ...errors, [e.target.name]: null });
+    setErrors({...errors, [e.target.name]: null});
   };
 
   return (
@@ -80,7 +73,7 @@ export default function SignupPage() {
             width: 56,
             height: 56
           }}>
-            <HowToRegOutlinedIcon fontSize="large" />
+            <HowToRegOutlinedIcon fontSize="large"/>
           </Avatar>
 
           <Typography component="h1" variant="h5" sx={{
@@ -92,7 +85,7 @@ export default function SignupPage() {
           </Typography>
 
           {errors.non_field_errors && (
-            <FormHelperText error sx={{ mb: 2 }}>
+            <FormHelperText error sx={{mb: 2}}>
               {errors.non_field_errors[0]}
             </FormHelperText>
           )}
@@ -176,6 +169,25 @@ export default function SignupPage() {
             >
               Create Account
             </Button>
+
+            <Typography variant="body2" sx={{mt: 2}}>
+              Are you a business owner?{' '}
+              <Button
+                onClick={() => navigate('/business-signup')}
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 100,
+                  color: 'primary.main',
+                  padding: 0,
+                  minWidth: 0,
+                  '&:hover': {
+                    backgroundColor: 'transparent'
+                  }
+                }}
+              >
+                Register your business here
+              </Button>
+            </Typography>
 
             <Typography variant="body2" sx={{
               mt: 2,

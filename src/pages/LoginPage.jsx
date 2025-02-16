@@ -27,7 +27,13 @@ export default function LoginPage() {
 
       const userResponse = await api.get('/users/me/');
       localStorage.setItem('userId', userResponse.data.id); // Store user ID
-      navigate('/'); // Redirect to home
+      localStorage.setItem('role', userResponse.data.role);
+
+      if (userResponse.data.role === 'BUSINESS_OWNER') {
+        navigate('/dashboard'); // Redirect to business dashboard
+      } else {
+        navigate('/'); // Redirect to home
+      }
     } catch (err) {
       setError('Invalid email or password');
     }
