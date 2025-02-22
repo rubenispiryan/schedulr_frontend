@@ -6,10 +6,8 @@ export default function Navbar() {
   const isLoggedIn = !!localStorage.getItem('token');
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear Django token
-    localStorage.removeItem('userId');
-    localStorage.removeItem('role');
-    navigate('/login');
+    localStorage.clear();
+    setTimeout(() => navigate('/login'), 0);
   };
 
   const isBusinessOwner = localStorage.getItem('role') === 'BUSINESS_OWNER';

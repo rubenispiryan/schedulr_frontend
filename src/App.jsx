@@ -14,6 +14,7 @@ import BusinessDashboardPage from "./pages/BusinessDashboardPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 import UserRole from "./constants/roles.js";
+import StaffDashboardPage from "./pages/StaffDashboardPage.jsx";
 
 // Create a basic theme
 const theme = createTheme({
@@ -73,7 +74,11 @@ export default function App() {
             maxWidth: '800px',
           }}>
             <Routes>
-              <Route path="/login" element={token ? <Navigate to="/"/> : <LoginPage/>}/>
+              <Route path="/login" element={
+                token && window.location.pathname === "/login" ?
+                  <Navigate to="/"/> :
+                  <LoginPage/>}
+              />
               <Route path="/signup" element={token ? <Navigate to="/"/> : <SignupPage/>}/>
               <Route path="/business-signup" element={token ? <Navigate to="/"/> : <BusinessSignupPage/>}/>
 
@@ -101,22 +106,33 @@ export default function App() {
               <Route
                 path="/businesses/:id"
                 element={
-                <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
-                  <AuthWrapper>
-                    <BusinessPage/>
-                  </AuthWrapper>
-                </ProtectedRoute>
+                  <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
+                    <AuthWrapper>
+                      <BusinessPage/>
+                    </AuthWrapper>
+                  </ProtectedRoute>
                 }
               />
 
               <Route
                 path="/book/:serviceId"
                 element={
-                <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
-                  <AuthWrapper>
-                    <BookingPage/>
-                  </AuthWrapper>
-                </ProtectedRoute>
+                  <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
+                    <AuthWrapper>
+                      <BookingPage/>
+                    </AuthWrapper>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/staff-dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={[UserRole.STAFF]}>
+                    <AuthWrapper>
+                      <StaffDashboardPage/>
+                    </AuthWrapper>
+                  </ProtectedRoute>
                 }
               />
             </Routes>
