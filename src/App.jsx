@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
 import {Box, createTheme, CssBaseline, ThemeProvider} from '@mui/material';
 
 import Navbar from './components/Navbar';
@@ -11,6 +11,9 @@ import BusinessPage from "./pages/BusinessPage.jsx";
 import BookingPage from "./pages/BookingPage.jsx";
 import BusinessSignupPage from "./pages/BusinessSignupPage.jsx";
 import BusinessDashboardPage from "./pages/BusinessDashboardPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
+import UserRole from "./constants/roles.js";
 
 // Create a basic theme
 const theme = createTheme({
@@ -38,6 +41,9 @@ const theme = createTheme({
     },
   },
 });
+
+const role = localStorage.getItem('role');
+const token = localStorage.getItem('token');
 
 export default function App() {
   return (
@@ -67,41 +73,50 @@ export default function App() {
             maxWidth: '800px',
           }}>
             <Routes>
-              <Route path="/login" element={<LoginPage/>}/>
-              <Route path="/signup" element={<SignupPage/>}/>
-              <Route path="/business-signup" element={<BusinessSignupPage/>}/>
+              <Route path="/login" element={token ? <Navigate to="/"/> : <LoginPage/>}/>
+              <Route path="/signup" element={token ? <Navigate to="/"/> : <SignupPage/>}/>
+              <Route path="/business-signup" element={token ? <Navigate to="/"/> : <BusinessSignupPage/>}/>
 
               <Route path="/" element={
                 <AuthWrapper>
-                  <HomePage/>
+                  {role === UserRole.BUSINESS_OWNER ? <BusinessDashboardPage/> : <HomePage/>}
                 </AuthWrapper>
               }/>
 
               <Route path="/dashboard" element={
-                <AuthWrapper>
-                  <BusinessDashboardPage/>
-                </AuthWrapper>
+                <ProtectedRoute allowedRoles={[UserRole.BUSINESS_OWNER]}>
+                  <AuthWrapper>
+                    <BusinessDashboardPage/>
+                  </AuthWrapper>
+                </ProtectedRoute>
               }/>
 
+              {/* TODO: add business user, staff user profile*/}
               <Route path="/profile" element={
                 <AuthWrapper>
                   <ProfilePage/>
                 </AuthWrapper>
               }/>
+
               <Route
                 path="/businesses/:id"
                 element={
+                <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
                   <AuthWrapper>
                     <BusinessPage/>
                   </AuthWrapper>
+                </ProtectedRoute>
                 }
               />
+
               <Route
                 path="/book/:serviceId"
                 element={
+                <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
                   <AuthWrapper>
                     <BookingPage/>
                   </AuthWrapper>
+                </ProtectedRoute>
                 }
               />
             </Routes>

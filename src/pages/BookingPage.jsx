@@ -129,7 +129,7 @@ export default function BookingPage() {
          >
           {staffMembers.map((staff) => (
             <MenuItem key={staff.id} value={staff.id}>
-              {staff.user.first_name} ({staff.role})
+              {staff.user.first_name}
             </MenuItem>
           ))}
         </Select>
