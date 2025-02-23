@@ -46,6 +46,9 @@ const theme = createTheme({
 const role = localStorage.getItem('role');
 const token = localStorage.getItem('token');
 
+const isBusinessOwner = localStorage.getItem('role') === UserRole.BUSINESS_OWNER;
+const isStaff = localStorage.getItem('role') === UserRole.STAFF;
+
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -84,7 +87,19 @@ export default function App() {
 
               <Route path="/" element={
                 <AuthWrapper>
-                  {role === UserRole.BUSINESS_OWNER ? <BusinessDashboardPage/> : <HomePage/>}
+                  {isBusinessOwner ? (
+                    <ProtectedRoute allowedRoles={[UserRole.BUSINESS_OWNER]}>
+                      <BusinessDashboardPage/>
+                    </ProtectedRoute>
+                  ) : isStaff ? (
+                    <ProtectedRoute allowedRoles={[UserRole.STAFF]}>
+                      <StaffDashboardPage/>
+                    </ProtectedRoute>
+                  ) : (
+                    <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
+                      <HomePage/>
+                    </ProtectedRoute>
+                  )}
                 </AuthWrapper>
               }/>
 

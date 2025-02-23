@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   Box,
   Button,
@@ -17,6 +17,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import {format, isSameDay} from 'date-fns';
 import {styled} from '@mui/material/styles';
+import api from "../services/api.js";
 
 const StyledCalendar = styled(Paper)(({theme}) => ({
   padding: theme.spacing(2),
@@ -106,29 +107,97 @@ const HighlightedDay = styled('div')(({theme, hasEvents}) => ({
 }));
 
 export default function StaffDashboardPage() {
+  const [appointments, setAppointments] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [visibleHours, setVisibleHours] = useState({start: '08:00', end: '18:00'}); // Default hours
   const calendarRef = useRef(null);
 
   // Temporary data - replace with API calls
-  const appointments = [
-    {
-      id: 1,
-      title: 'John Doe - Haircut',
-      start: '2025-03-15T10:00:00',
-      end: '2025-03-15T10:30:00',
-      status: 'confirmed',
-      notes: 'Wants skin fade with beard trim'
-    },
-    {
-      id: 2,
-      title: 'Jane Smith - Coloring',
-      start: '2025-03-15T18:00:00',
-      end: '2025-03-15T20:00:00',
-      status: 'pending',
-      notes: 'All-over color with highlights'
+  // const appointments = [
+  //   {
+  //     id: 1,
+  //     title: 'John Doe - Haircut',
+  //     start: '2025-03-15T10:00:00',
+  //     end: '2025-03-15T10:30:00',
+  //     status: 'confirmed',
+  //     notes: 'Wants skin fade with beard trim'
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Jane Smith - Coloring',
+  //     start: '2025-03-15T18:00:00',
+  //     end: '2025-03-15T20:00:00',
+  //     status: 'pending',
+  //     notes: 'All-over color with highlights'
+  //   }
+  // ];
+
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchData();
+        setAppointments(data);
+      } catch (error) {
+        console.error('Failed to load appointments:', error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      // Fetch all bookings
+      const bookingsResponse = await api.get('/bookings/staff/');
+      const bookings = bookingsResponse.data;
+
+      if (bookings.length === 0) return [];
+
+      // Extract unique user, staff, and service IDs
+      const userIds = [...new Set(bookings.map(b => b.user))];
+      const staffIds = [...new Set(bookings.map(b => b.staff))];
+      const serviceIds = [...new Set(bookings.map(b => b.service))];
+
+      // Fetch data in parallel
+      const [users, services] = await Promise.all([
+        Promise.all(userIds.map(id => api.get(`/users/${id}/`).then(res => res.data))),
+        Promise.all(serviceIds.map(id => api.get(`/services/${id}/`).then(res => res.data))),
+      ]);
+
+      // Convert arrays to lookup maps
+      const userMap = Object.fromEntries(users.map(user => [user.id, user]));
+      // const staffMap = Object.fromEntries(staff.map(staff => [staff.id, staff]));
+      const serviceMap = Object.fromEntries(services.map(service => [service.id, service]));
+
+      // Transform data
+      return bookings.map(booking => {
+        if (
+          !booking.id ||
+          !booking.user ||
+          !booking.service ||
+          !booking.start_time ||
+          !booking.end_time ||
+          !booking.status
+        ) {
+          throw new Error(`Invalid booking data: ${JSON.stringify(booking)}`);
+        }
+
+        console.log(userMap);
+
+        return {
+          id: booking.id,
+          title: `${userMap[booking.user]?.first_name || 'Unknown'} - ${serviceMap[booking.service]?.name || 'Unknown'}`,
+          start: booking.start_time,
+          end: booking.end_time,
+          status: booking.status,
+        }
+      });
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+      throw error;
     }
-  ];
+  };
 
   // Calculate visible hours based on appointments for the selected day
   const calculateVisibleHours = (date) => {
@@ -284,7 +353,6 @@ const AppointmentDialog = ({open, onClose, appointment}) => (
           <Typography variant="h6" gutterBottom>
             {appointment.title}
           </Typography>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
             {appointment?.start && appointment?.end ? (
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 {format(new Date(appointment.start), 'MMM d, yyyy h:mm a')} -{' '}
@@ -295,7 +363,6 @@ const AppointmentDialog = ({open, onClose, appointment}) => (
                 Error: Invalid appointment date
               </Typography>
             )}
-          </Typography>
           <Divider sx={{my: 2}}/>
           <Typography variant="body1">
             {appointment.notes}

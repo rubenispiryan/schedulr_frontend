@@ -1,5 +1,6 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {AppBar, Box, Button, Toolbar, Typography} from '@mui/material';
+import UserRole from "../constants/roles.js";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -10,7 +11,9 @@ export default function Navbar() {
     setTimeout(() => navigate('/login'), 0);
   };
 
-  const isBusinessOwner = localStorage.getItem('role') === 'BUSINESS_OWNER';
+  // TODO: move to the constants file
+  const isBusinessOwner = localStorage.getItem('role') === UserRole.BUSINESS_OWNER;
+  const isStaff = localStorage.getItem('role') === UserRole.STAFF;
 
   return (
     <AppBar position="fixed" sx={{
@@ -32,6 +35,10 @@ export default function Navbar() {
               {isBusinessOwner ? (
                 <>
                   <Button component={Link} to="/dashboard">Dashboard</Button>
+                </>
+              ) : isStaff ? (
+                <>
+                  <Button component={Link} to="/staff-dashboard">Dashboard</Button>
                 </>
               ) : (
                 <>
