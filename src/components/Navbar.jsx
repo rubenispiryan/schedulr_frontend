@@ -38,6 +38,7 @@ export default function Navbar() {
                 </>
               ) : isStaff ? (
                 <>
+                  <Button component={Link} to="/working-hours">Schedule</Button>
                   <Button component={Link} to="/staff-dashboard">Dashboard</Button>
                 </>
               ) : (

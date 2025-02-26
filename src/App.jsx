@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 import UserRole from "./constants/roles.js";
 import StaffDashboardPage from "./pages/StaffDashboardPage.jsx";
+import SetWorkingHoursPage from "./pages/SetWorkingHoursPage.jsx";
 
 // Create a basic theme
 const theme = createTheme({
@@ -146,6 +147,17 @@ export default function App() {
                   <ProtectedRoute allowedRoles={[UserRole.STAFF]}>
                     <AuthWrapper>
                       <StaffDashboardPage/>
+                    </AuthWrapper>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/working-hours"
+                element={
+                  <ProtectedRoute allowedRoles={[UserRole.STAFF]}>
+                    <AuthWrapper>
+                      <SetWorkingHoursPage/>
                     </AuthWrapper>
                   </ProtectedRoute>
                 }
