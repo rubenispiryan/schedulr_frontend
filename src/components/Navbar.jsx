@@ -43,9 +43,9 @@ export default function Navbar() {
               ) : (
                 <>
                   <Button component={Link} to="/">Home</Button>
-                  <Button component={Link} to="/profile">Profile</Button>
                 </>
               )}
+              <Button component={Link} to="/profile">Profile</Button>
               <Button color="inherit" onClick={handleLogout}>
                 🚪 Logout
               </Button>

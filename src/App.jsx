@@ -46,8 +46,8 @@ const theme = createTheme({
 const role = localStorage.getItem('role');
 const token = localStorage.getItem('token');
 
-const isBusinessOwner = localStorage.getItem('role') === UserRole.BUSINESS_OWNER;
-const isStaff = localStorage.getItem('role') === UserRole.STAFF;
+const isBusinessOwner = role === UserRole.BUSINESS_OWNER;
+const isStaff = role === UserRole.STAFF;
 
 export default function App() {
   return (

@@ -183,8 +183,6 @@ export default function StaffDashboardPage() {
           throw new Error(`Invalid booking data: ${JSON.stringify(booking)}`);
         }
 
-        console.log(userMap);
-
         return {
           id: booking.id,
           title: `${userMap[booking.user]?.first_name || 'Unknown'} - ${serviceMap[booking.service]?.name || 'Unknown'}`,
